@@ -84,6 +84,14 @@ export default function Navigation({ unreadCount, partnerName }: NavProps) {
             <span className="text-[10px] font-sans font-medium">Timeline</span>
           </Link>
 
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("surprise-me"))}
+            className="flex flex-col items-center gap-0.5 px-4 py-2 rounded-xl transition-all duration-200 text-[#b8a898]"
+          >
+            <span className="text-xl leading-none">✦</span>
+            <span className="text-[10px] font-sans font-medium">Surprise</span>
+          </button>
+
           <Link
             href="/new"
             className="flex flex-col items-center gap-0.5 px-5 py-2 rounded-2xl btn-primary transition-all duration-200"
@@ -107,7 +115,7 @@ export default function Navigation({ unreadCount, partnerName }: NavProps) {
         </div>
       </div>
 
-      {/* Desktop side links */}
+      {/* Desktop sub-nav */}
       <div className="hidden sm:flex fixed top-14 left-0 right-0 z-40 justify-center gap-2 pt-3 pb-2">
         <Link
           href="/home"

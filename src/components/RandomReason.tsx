@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Message } from "@/types";
 import MessageCard from "./MessageCard";
 import { User } from "@/types";
@@ -22,11 +22,18 @@ export default function RandomReason({
     setShown(random);
   }
 
+  useEffect(() => {
+    function handleSurprise() {
+      pickRandom();
+    }
+    window.addEventListener("surprise-me", handleSurprise);
+    return () => window.removeEventListener("surprise-me", handleSurprise);
+  }, [messages]);
   return (
     <>
       <button
         onClick={pickRandom}
-        className="btn-ghost w-full py-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2 mb-4"
+        className="hidden sm:flex btn-ghost w-full py-3 rounded-xl text-sm font-medium items-center justify-center gap-2 mb-4"
       >
         <span>✦</span>
         <span>Surprise me with a reason</span>
