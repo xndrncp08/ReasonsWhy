@@ -48,11 +48,20 @@ export default function Navigation({ unreadCount, partnerName }: NavProps) {
           </Link>
 
           <Link
+            href="/summary"
+            className={`p-2 rounded-xl transition-all duration-200 text-sm font-medium ${
+              pathname === "/summary"
+                ? "bg-white/60 text-[#3d2f22]"
+                : "text-[#7a6658] hover:bg-white/40"
+            }`}
+          >
+            Timeline
+          </Link>
+
+          <Link
             href="/new"
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-              pathname === "/new"
-                ? "btn-primary"
-                : "btn-ghost"
+              pathname === "/new" ? "btn-primary" : "btn-ghost"
             }`}
           >
             + New
