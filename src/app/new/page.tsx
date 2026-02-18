@@ -28,9 +28,9 @@ export default async function NewPage() {
       <div className="relative z-10">
         <Navigation
           unreadCount={0}
-          partnerName={otherUser?.name}
+partnerName={(otherUser as any)?.name}
         />
-        <NewMessageForm partnerName={otherUser?.name} />
+        <NewMessageForm partnerName={(otherUser as any)?.name} />
       </div>
     </div>
   );

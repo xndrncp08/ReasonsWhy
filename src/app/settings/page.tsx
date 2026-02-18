@@ -30,7 +30,7 @@ export default async function SettingsPage() {
       </div>
 
       <div className="relative z-10">
-        <Navigation unreadCount={0} partnerName={otherUser?.name} />
+        <Navigation unreadCount={0} partnerName={(otherUser as any)?.name} />
 
         <main className="max-w-2xl mx-auto px-4 py-8">
           <div className="glass-card p-8 animate-fade-in">
@@ -41,12 +41,18 @@ export default async function SettingsPage() {
             {currentUser && (
               <div className="space-y-4 mb-8">
                 <div className="glass p-4 rounded-xl">
-                  <p className="text-xs text-[#b8a898] font-sans mb-1">Your name</p>
-                  <p className="text-[#3d2f22] font-serif">{currentUser.name}</p>
+                  <p className="text-xs text-[#b8a898] font-sans mb-1">
+                    Your name
+                  </p>
+                  <p className="text-[#3d2f22] font-serif">
+                    {(currentUser as any).name}
+                  </p>
                 </div>
                 <div className="glass p-4 rounded-xl">
                   <p className="text-xs text-[#b8a898] font-sans mb-1">Email</p>
-                  <p className="text-[#3d2f22] font-sans text-sm">{currentUser.email}</p>
+                  <p className="text-[#3d2f22] font-sans text-sm">
+                    {(currentUser as any).email}
+                  </p>
                 </div>
               </div>
             )}
