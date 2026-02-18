@@ -28,7 +28,7 @@ export default function MessageList({
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [newMessageIds, setNewMessageIds] = useState<Set<string>>(new Set());
   const bottomRef = useRef<HTMLDivElement>(null);
-  const supabase = createClient();
+  const supabase = createClient() as any;
 
   const scrollToBottom = useCallback((smooth = true) => {
     bottomRef.current?.scrollIntoView({
@@ -53,17 +53,17 @@ export default function MessageList({
           schema: "public",
           table: "messages",
         },
-        async (payload) => {
+        async (payload: { new: Message }) => {
           const newMsg = payload.new as Message;
 
           // Fetch sender details
-          const { data: sender } = await supabase
+          const { data: sender } = (await supabase
             .from("users")
             .select("*")
             .eq("id", newMsg.sender_id)
-            .single();
+            .single()) as any;
 
-          const enrichedMsg = { ...newMsg, sender };
+          const enrichedMsg = { ...newMsg, sender: sender ?? undefined };
           setMessages((prev) => [...prev, enrichedMsg]);
           setNewMessageIds((prev) => new Set(prev).add(newMsg.id));
 
@@ -86,7 +86,7 @@ export default function MessageList({
           }
 
           setTimeout(() => scrollToBottom(), 100);
-        }
+        },
       )
       .on(
         "postgres_changes",
@@ -95,12 +95,12 @@ export default function MessageList({
           schema: "public",
           table: "messages",
         },
-        (payload) => {
+        (payload: { new: Message }) => {
           const updated = payload.new as Message;
           setMessages((prev) =>
-            prev.map((m) => (m.id === updated.id ? { ...m, ...updated } : m))
+            prev.map((m) => (m.id === updated.id ? { ...m, ...updated } : m)),
           );
-        }
+        },
       )
       .subscribe();
 
@@ -166,11 +166,7 @@ export default function MessageList({
                   <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#e8d8c8] to-transparent" />
                 </div>
               )}
-              <MessageCard
-                message={msg}
-                isSent={isSent}
-                isNew={isNew}
-              />
+              <MessageCard message={msg} isSent={isSent} isNew={isNew} />
             </div>
           );
         })}
