@@ -166,7 +166,7 @@ export default function MessageList({
                   <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#e8d8c8] to-transparent" />
                 </div>
               )}
-              <MessageCard message={msg} isSent={isSent} isNew={isNew} />
+              <MessageCard message={msg} isSent={isSent} isNew={isNew} currentUserId={currentUser.id}/>
             </div>
           );
         })}

@@ -10,7 +10,10 @@ interface RandomReasonProps {
   currentUser: User;
 }
 
-export default function RandomReason({ messages, currentUser }: RandomReasonProps) {
+export default function RandomReason({
+  messages,
+  currentUser,
+}: RandomReasonProps) {
   const [shown, setShown] = useState<Message | null>(null);
 
   function pickRandom() {
@@ -41,7 +44,9 @@ export default function RandomReason({ messages, currentUser }: RandomReasonProp
           >
             <div className="text-center mb-4">
               <div className="text-3xl mb-1">✦</div>
-              <p className="text-xs text-[#b8a898] font-sans">a reason from the past</p>
+              <p className="text-xs text-[#b8a898] font-sans">
+                a reason from the past
+              </p>
               <p className="text-xs text-[#c8b8a8] font-sans mt-1">
                 {new Date(shown.created_at).toLocaleDateString("en-US", {
                   year: "numeric",
@@ -54,6 +59,7 @@ export default function RandomReason({ messages, currentUser }: RandomReasonProp
             <MessageCard
               message={shown}
               isSent={shown.sender_id === currentUser.id}
+              currentUserId={currentUser.id}
             />
 
             <button

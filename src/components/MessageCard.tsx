@@ -1,13 +1,20 @@
 import { Message } from "@/types";
 import { formatDistanceToNow } from "date-fns";
+import ReactionBar from "./ReactionBar";
 
 interface MessageCardProps {
   message: Message;
   isSent: boolean;
   isNew?: boolean;
+  currentUserId: string;
 }
 
-export default function MessageCard({ message, isSent, isNew }: MessageCardProps) {
+export default function MessageCard({
+  message,
+  isSent,
+  isNew,
+  currentUserId,
+}: MessageCardProps) {
   const timeAgo = formatDistanceToNow(new Date(message.created_at), {
     addSuffix: true,
   });
@@ -20,7 +27,9 @@ export default function MessageCard({ message, isSent, isNew }: MessageCardProps
         isNew ? "message-card-enter" : "animate-fade-in"
       }`}
     >
-      <div className={`max-w-[80%] sm:max-w-[65%] ${isSent ? "items-end" : "items-start"} flex flex-col gap-1.5`}>
+      <div
+        className={`max-w-[80%] sm:max-w-[65%] ${isSent ? "items-end" : "items-start"} flex flex-col gap-1.5`}
+      >
         <span className="text-xs text-[#b8a898] px-2">
           {isSent ? "you" : senderName}
         </span>
@@ -43,7 +52,6 @@ export default function MessageCard({ message, isSent, isNew }: MessageCardProps
             {message.message}
           </p>
 
-          {/* Image attachment */}
           {message.image_url && (
             <div className="mt-3">
               <img
@@ -57,16 +65,37 @@ export default function MessageCard({ message, isSent, isNew }: MessageCardProps
 
           {isSent && (
             <div className="flex justify-end mt-2">
-              <span className={`text-[10px] font-sans ${message.is_read ? "text-[#88a888]" : "text-[#b8a898]"}`}>
+              <span
+                className={`text-[10px] font-sans ${message.is_read ? "text-[#88a888]" : "text-[#b8a898]"}`}
+              >
                 {message.is_read ? "✓✓ seen" : "✓ sent"}
               </span>
             </div>
           )}
         </div>
 
-        <span className="text-xs text-[#c8b8a8] px-2 font-sans">
-          {timeAgo}
-        </span>
+        <ReactionBar
+          messageId={message.id}
+          reactions={((message as any).reactions ?? []).reduce(
+            (acc: any[], r: any) => {
+              const existing = acc.find((a) => a.emoji === r.emoji);
+              if (existing) {
+                existing.count++;
+                if (r.user_id === currentUserId) existing.reacted = true;
+              } else {
+                acc.push({
+                  emoji: r.emoji,
+                  count: 1,
+                  reacted: r.user_id === currentUserId,
+                });
+              }
+              return acc;
+            },
+            [],
+          )}
+        />
+
+        <span className="text-xs text-[#c8b8a8] px-2 font-sans">{timeAgo}</span>
       </div>
     </div>
   );

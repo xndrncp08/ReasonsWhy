@@ -41,6 +41,7 @@ export default function OnThisDay({ messages, currentUser }: OnThisDayProps) {
             <MessageCard
               message={msg}
               isSent={msg.sender_id === currentUser.id}
+              currentUserId={currentUser.id}
             />
           </div>
         ))}

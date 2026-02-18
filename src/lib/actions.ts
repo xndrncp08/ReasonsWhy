@@ -46,7 +46,10 @@ export async function sendMessage(message: string, imageUrl?: string) {
   if (error) return { error: error.message };
 
   try {
-    const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+    const client = twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN,
+    );
     await client.messages.create({
       body: `💌 A new reason why: "${message.trim()}"`,
       from: process.env.TWILIO_FROM_NUMBER,
@@ -58,6 +61,39 @@ export async function sendMessage(message: string, imageUrl?: string) {
 
   revalidatePath("/home");
   redirect("/home");
+}
+
+export async function toggleReaction(messageId: string, emoji: string) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  // Check if reaction already exists
+  const { data: existing } = await supabase
+    .from("reactions")
+    .select("id")
+    .eq("message_id", messageId)
+    .eq("user_id", user.id)
+    .eq("emoji", emoji)
+    .single();
+
+  if (existing) {
+    await supabase
+      .from("reactions")
+      .delete()
+      .eq("id", (existing as any).id);
+  } else {
+    await supabase.from("reactions").insert({
+      message_id: messageId,
+      user_id: user.id,
+      emoji,
+    });
+  }
+
+  revalidatePath("/home");
 }
 
 export async function markMessagesAsRead() {
@@ -88,7 +124,7 @@ export async function getMessages() {
   const { data: messages } = await supabase
     .from("messages")
     .select(
-      "*, sender:users!messages_sender_id_fkey(id, name, email), receiver:users!messages_receiver_id_fkey(id, name, email)",
+      "*, sender:users!messages_sender_id_fkey(id, name, email), receiver:users!messages_receiver_id_fkey(id, name, email), reactions(id, emoji, user_id)",
     )
     .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
     .order("created_at", { ascending: true });
