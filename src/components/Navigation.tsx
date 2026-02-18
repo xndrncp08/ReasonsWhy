@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "@/lib/actions";
+import DarkModeToggle from "./DarkModeToggle";
 
 interface NavProps {
   unreadCount: number;
@@ -67,6 +68,7 @@ export default function Navigation({ unreadCount, partnerName }: NavProps) {
             + New
           </Link>
 
+          <DarkModeToggle />
           <form action={signOut}>
             <button
               type="submit"

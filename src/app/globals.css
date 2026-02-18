@@ -1,6 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-script: 'Dancing Script', cursive;
+}
+
+@variant dark (&:where(.dark, .dark *));
 
 :root {
   --bg-primary: #faf7f2;
@@ -12,6 +18,16 @@
   --sage: #88a888;
   --warm-text: #3d2f22;
   --soft-text: #7a6658;
+}
+
+.dark {
+  --bg-primary: #1a1410;
+  --bg-secondary: #221c16;
+  --glass-bg: rgba(30, 24, 18, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --warm-text: #f0e8e0;
+  --soft-text: #c8b8a8;
 }
 
 * {
@@ -91,6 +107,11 @@ body {
   border-radius: 20px;
 }
 
+.dark .glass-card {
+  background: rgba(40, 30, 22, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .glass-card-sent {
   background: rgba(232, 168, 152, 0.2);
   backdrop-filter: blur(24px);
@@ -117,12 +138,23 @@ body {
   box-shadow: 0 2px 20px rgba(92, 74, 58, 0.06);
 }
 
+.dark .glass-nav {
+  background: rgba(26, 20, 16, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
 .glass-input {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1.5px solid rgba(232, 168, 152, 0.4);
   transition: all 0.3s ease;
+}
+
+.dark .glass-input {
+  background: rgba(40, 30, 22, 0.6);
+  border-color: rgba(232, 168, 152, 0.2);
+  color: var(--warm-text);
 }
 
 .glass-input:focus {
@@ -160,6 +192,10 @@ body {
 .btn-ghost:hover {
   background: rgba(255, 255, 255, 0.6);
   border-color: rgba(92, 74, 58, 0.35);
+}
+
+.dark .btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Message card animations */
