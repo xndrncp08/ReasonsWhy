@@ -16,7 +16,10 @@ interface ReactionBarProps {
 
 const EMOJIS = ["♡", "🥹", "😊", "💋"];
 
-export default function ReactionBar({ messageId, reactions }: ReactionBarProps) {
+export default function ReactionBar({
+  messageId,
+  reactions,
+}: ReactionBarProps) {
   const [open, setOpen] = useState(false);
   const [localReactions, setLocalReactions] = useState<Reaction[]>(reactions);
 
@@ -29,8 +32,12 @@ export default function ReactionBar({ messageId, reactions }: ReactionBarProps) 
       if (existing) {
         return prev.map((r) =>
           r.emoji === emoji
-            ? { ...r, count: r.reacted ? r.count - 1 : r.count + 1, reacted: !r.reacted }
-            : r
+            ? {
+                ...r,
+                count: r.reacted ? r.count - 1 : r.count + 1,
+                reacted: !r.reacted,
+              }
+            : r,
         );
       }
       return [...prev, { emoji, count: 1, reacted: true }];
@@ -42,7 +49,7 @@ export default function ReactionBar({ messageId, reactions }: ReactionBarProps) 
   const active = localReactions.filter((r) => r.count > 0);
 
   return (
-    <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+    <div className="flex items-center gap-1.5 mt-2 flex-wrap max-w-full">
       {active.map((r) => (
         <button
           key={r.emoji}
@@ -67,12 +74,12 @@ export default function ReactionBar({ messageId, reactions }: ReactionBarProps) 
         </button>
 
         {open && (
-          <div className="absolute bottom-7 left-0 glass-card px-2 py-1.5 flex gap-1.5 rounded-xl z-10">
+          <div className="absolute bottom-8 left-0 glass-card px-3 py-2 flex gap-2 rounded-xl z-10 shadow-lg">
             {EMOJIS.map((emoji) => (
               <button
                 key={emoji}
                 onClick={() => handleReact(emoji)}
-                className="text-base hover:scale-125 transition-transform duration-150"
+                className="text-lg hover:scale-125 transition-transform duration-150 p-1"
               >
                 {emoji}
               </button>
