@@ -72,28 +72,28 @@ export default function MessageCard({
               </span>
             </div>
           )}
-        </div>
 
-        <ReactionBar
-          messageId={message.id}
-          reactions={((message as any).reactions ?? []).reduce(
-            (acc: any[], r: any) => {
-              const existing = acc.find((a) => a.emoji === r.emoji);
-              if (existing) {
-                existing.count++;
-                if (r.user_id === currentUserId) existing.reacted = true;
-              } else {
-                acc.push({
-                  emoji: r.emoji,
-                  count: 1,
-                  reacted: r.user_id === currentUserId,
-                });
-              }
-              return acc;
-            },
-            [],
-          )}
-        />
+          <ReactionBar
+            messageId={message.id}
+            reactions={((message as any).reactions ?? []).reduce(
+              (acc: any[], r: any) => {
+                const existing = acc.find((a) => a.emoji === r.emoji);
+                if (existing) {
+                  existing.count++;
+                  if (r.user_id === currentUserId) existing.reacted = true;
+                } else {
+                  acc.push({
+                    emoji: r.emoji,
+                    count: 1,
+                    reacted: r.user_id === currentUserId,
+                  });
+                }
+                return acc;
+              },
+              [],
+            )}
+          />
+        </div>
 
         <span className="text-xs text-[#c8b8a8] px-2 font-sans">{timeAgo}</span>
       </div>
