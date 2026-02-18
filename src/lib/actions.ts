@@ -1,4 +1,5 @@
 "use server";
+import twilio from "twilio";
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
@@ -38,11 +39,22 @@ export async function sendMessage(message: string) {
   const { error } = await supabase.from("messages").insert({
     message: message.trim(),
     sender_id: user.id,
-    receiver_id: otherUser.id,
+    receiver_id: (otherUser as any).id,
     is_read: false,
   });
 
   if (error) return { error: error.message };
+
+  // Send SMS notification
+  const client = twilio(
+    process.env.TWILIO_ACCOUNT_SID,
+    process.env.TWILIO_AUTH_TOKEN,
+  );
+  await client.messages.create({
+    body: `💌 A new reason why: "${message.trim()}"`,
+    from: process.env.TWILIO_FROM_NUMBER,
+    to: process.env.PARTNER_PHONE_NUMBER!,
+  });
 
   revalidatePath("/home");
   redirect("/home");
@@ -75,7 +87,9 @@ export async function getMessages() {
 
   const { data: messages } = await supabase
     .from("messages")
-    .select("*, sender:users!messages_sender_id_fkey(id, name, email), receiver:users!messages_receiver_id_fkey(id, name, email)")
+    .select(
+      "*, sender:users!messages_sender_id_fkey(id, name, email), receiver:users!messages_receiver_id_fkey(id, name, email)",
+    )
     .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
     .order("created_at", { ascending: true });
 
