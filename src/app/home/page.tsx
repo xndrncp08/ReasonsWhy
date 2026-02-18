@@ -4,6 +4,7 @@ import { getMessages } from "@/lib/actions";
 import Navigation from "@/components/Navigation";
 import MessageList from "@/components/MessageList";
 import RandomReason from "@/components/RandomReason";
+import OnThisDay from "@/components/OnThisDay";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -47,6 +48,8 @@ export default async function HomePage() {
                 : `${messages.length} reason${messages.length !== 1 ? "s" : ""} and counting`}
             </p>
           </div>
+
+          <OnThisDay messages={messages} currentUser={currentUser} />
 
           {messages.length > 0 && (
             <RandomReason messages={messages} currentUser={currentUser} />
