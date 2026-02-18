@@ -31,7 +31,7 @@ export default async function HomePage() {
       <div className="relative z-10">
         <Navigation
           unreadCount={unreadCount ?? 0}
-          partnerName={otherUser?.name}
+          partnerName={(otherUser as any)?.name}
         />
 
         <main className="max-w-2xl mx-auto px-4 pb-24">
