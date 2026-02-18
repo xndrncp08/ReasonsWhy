@@ -27,7 +27,6 @@ export async function sendMessage(message: string, imageUrl?: string) {
   } = await supabase.auth.getUser();
   if (!user) return { error: "Not authenticated" };
 
-  // Get the other user (receiver)
   const { data: otherUser, error: userError } = await supabase
     .from("users")
     .select("id")
@@ -36,7 +35,7 @@ export async function sendMessage(message: string, imageUrl?: string) {
 
   if (userError || !otherUser) return { error: "Could not find receiver" };
 
-const { error } = await supabase.from("messages").insert({
+  const { error } = await supabase.from("messages").insert({
     message: message.trim(),
     sender_id: user.id,
     receiver_id: (otherUser as any).id,
@@ -46,16 +45,16 @@ const { error } = await supabase.from("messages").insert({
 
   if (error) return { error: error.message };
 
-  // Send SMS notification
-  const client = twilio(
-    process.env.TWILIO_ACCOUNT_SID,
-    process.env.TWILIO_AUTH_TOKEN,
-  );
-  await client.messages.create({
-    body: `💌 A new reason why: "${message.trim()}"`,
-    from: process.env.TWILIO_FROM_NUMBER,
-    to: process.env.PARTNER_PHONE_NUMBER!,
-  });
+  try {
+    const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+    await client.messages.create({
+      body: `💌 A new reason why: "${message.trim()}"`,
+      from: process.env.TWILIO_FROM_NUMBER,
+      to: process.env.PARTNER_PHONE_NUMBER!,
+    });
+  } catch (e) {
+    console.error("SMS failed:", e);
+  }
 
   revalidatePath("/home");
   redirect("/home");

@@ -14,7 +14,7 @@ export default function NewMessageForm({
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const MAX_LENGTH = 500;
+  const MAX_LENGTH = 5000;
 
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -97,7 +97,7 @@ export default function NewMessageForm({
           {/* Image upload */}
           <div>
             <label className="block text-sm font-medium text-[#7a6658] mb-2">
-              Attach an image (optional)
+              Attach an image
             </label>
             <input
               type="file"
