@@ -12,6 +12,7 @@ export interface Message {
   receiver_id: string;
   created_at: string;
   is_read: boolean;
+  image_url?: string;
   sender?: User;
   receiver?: User;
 }

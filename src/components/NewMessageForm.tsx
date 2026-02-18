@@ -2,12 +2,26 @@
 
 import { useState } from "react";
 import { sendMessage } from "@/lib/actions";
+import { createClient } from "@/lib/supabase/client";
 
-export default function NewMessageForm({ partnerName }: { partnerName?: string }) {
+export default function NewMessageForm({
+  partnerName,
+}: {
+  partnerName?: string;
+}) {
   const [message, setMessage] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const MAX_LENGTH = 500;
+
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImage(file);
+    setPreview(URL.createObjectURL(file));
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -16,7 +30,29 @@ export default function NewMessageForm({ partnerName }: { partnerName?: string }
     setLoading(true);
     setError("");
 
-    const result = await sendMessage(message);
+    let imageUrl: string | undefined;
+
+    if (image) {
+      const supabase = createClient();
+      const filename = `${Date.now()}-${image.name}`;
+      const { data, error: uploadError } = await supabase.storage
+        .from("message-images")
+        .upload(filename, image);
+
+      if (uploadError) {
+        setError("Image upload failed: " + uploadError.message);
+        setLoading(false);
+        return;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from("message-images")
+        .getPublicUrl(data.path);
+
+      imageUrl = urlData.publicUrl;
+    }
+
+    const result = await sendMessage(message, imageUrl);
     if (result?.error) {
       setError(result.error);
       setLoading(false);
@@ -26,7 +62,6 @@ export default function NewMessageForm({ partnerName }: { partnerName?: string }
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="glass-card p-8 animate-slide-up">
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="text-4xl mb-3">♡</div>
           <h1 className="font-display text-3xl font-medium text-[#3d2f22] mb-2">
@@ -41,7 +76,6 @@ export default function NewMessageForm({ partnerName }: { partnerName?: string }
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="relative">
-            {/* Decorative quote */}
             <span className="absolute top-3 left-4 font-display text-4xl leading-none text-[#e8c8b8] pointer-events-none select-none">
               "
             </span>
@@ -58,6 +92,38 @@ export default function NewMessageForm({ partnerName }: { partnerName?: string }
             <div className="absolute bottom-3 right-4 text-xs text-[#c8b8a8] font-sans">
               {message.length}/{MAX_LENGTH}
             </div>
+          </div>
+
+          {/* Image upload */}
+          <div>
+            <label className="block text-sm font-medium text-[#7a6658] mb-2">
+              Attach an image (optional)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="text-sm text-[#7a6658] file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-[#fce8e4] file:text-[#c85540] hover:file:bg-[#f8d0c8] cursor-pointer"
+            />
+            {preview && (
+              <div className="mt-3 relative inline-block">
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="max-h-48 rounded-xl object-cover border border-[#e8d0c0]"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setImage(null);
+                    setPreview(null);
+                  }}
+                  className="absolute -top-2 -right-2 w-6 h-6 bg-[#c85540] text-white rounded-full text-xs flex items-center justify-center"
+                >
+                  ×
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Prompt suggestions */}

@@ -19,7 +19,7 @@ export async function signOut() {
   redirect("/login");
 }
 
-export async function sendMessage(message: string) {
+export async function sendMessage(message: string, imageUrl?: string) {
   const supabase = await createClient();
 
   const {
@@ -36,11 +36,12 @@ export async function sendMessage(message: string) {
 
   if (userError || !otherUser) return { error: "Could not find receiver" };
 
-  const { error } = await supabase.from("messages").insert({
+const { error } = await supabase.from("messages").insert({
     message: message.trim(),
     sender_id: user.id,
     receiver_id: (otherUser as any).id,
     is_read: false,
+    image_url: imageUrl,
   });
 
   if (error) return { error: error.message };
