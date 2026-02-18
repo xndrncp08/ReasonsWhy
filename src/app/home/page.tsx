@@ -63,7 +63,7 @@ export default async function HomePage() {
         </main>
 
         {/* Floating compose button */}
-        <div className="fixed bottom-8 right-1/2 translate-x-1/2 sm:right-8 sm:translate-x-0 z-40">
+        <div className="fixed bottom-24 sm:bottom-8 right-1/2 translate-x-1/2 sm:right-8 sm:translate-x-0 z-40">
           <Link
             href="/new"
             className="btn-primary flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-medium shadow-lg"

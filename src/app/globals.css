@@ -99,6 +99,12 @@ body {
   50% { transform: translateY(-20px) scale(1.03); }
 }
 
+@media (max-width: 640px) {
+  main {
+    padding-bottom: 5rem;
+  }
+}
+
 /* Glass morphism components */
 .glass {
   background: var(--glass-bg);
