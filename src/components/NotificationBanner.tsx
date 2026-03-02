@@ -44,7 +44,7 @@ export default function NotificationBanner({
             setVisible(false);
             setTimeout(onDismiss, 300);
           }}
-          className="text-[#c8b8a8] hover:text-[#7a6658] transition-colors flex-shrink-0 p-1"
+          className="text-[#c8b8a8] hover:text-[#7a6658] transition-colors shrink-0 p-1"
           aria-label="Dismiss notification"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">

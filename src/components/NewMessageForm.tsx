@@ -88,6 +88,12 @@ export default function NewMessageForm({
               placeholder="Tell them something beautiful..."
               required
               autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && e.ctrlKey) {
+                  e.preventDefault();
+                  handleSubmit(e as any);
+                }
+              }}
             />
             <div className="absolute bottom-3 right-4 text-xs text-[#c8b8a8] font-sans">
               {message.length}/{MAX_LENGTH}
@@ -161,7 +167,7 @@ export default function NewMessageForm({
             <button
               type="submit"
               disabled={loading || !message.trim()}
-              className="btn-primary flex-[2] py-3.5 rounded-xl text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="btn-primary flex-2 py-3.5 rounded-xl text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>

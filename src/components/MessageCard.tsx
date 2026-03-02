@@ -48,7 +48,7 @@ export default function MessageCard({
             "
           </span>
 
-          <p className="font-serif text-[#3d2f22] text-base leading-relaxed pt-1 pl-2">
+          <p className="font-serif text-[#3d2f22] text-base leading-relaxed pt-1 pl-2 whitespace-pre-wrap">
             {message.message}
           </p>
 
